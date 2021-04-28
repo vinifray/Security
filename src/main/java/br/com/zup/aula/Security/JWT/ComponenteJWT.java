@@ -14,11 +14,11 @@ public class ComponenteJWT {
     @Value("${jwt.segredo}")
     private String segredo;
 
-    @Value("${jwt.milesegundos}")
-    private Long milesegundos;
+    @Value("${jwt.milissegundos}")
+    private Long milissegundos;
 
     public String gerarToken(String username){
-        Date vencimento = new Date(System.currentTimeMillis()+milesegundos);
+        Date vencimento = new Date(System.currentTimeMillis()+milissegundos);
 
         String token = Jwts.builder().setSubject(username)
                 .setExpiration(vencimento)
