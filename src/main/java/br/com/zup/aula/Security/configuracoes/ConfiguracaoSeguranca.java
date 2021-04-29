@@ -2,6 +2,7 @@ package br.com.zup.aula.Security.configuracoes;
 
 import br.com.zup.aula.Security.JWT.ComponenteJWT;
 import br.com.zup.aula.Security.JWT.FiltroAutenticacaoJwt;
+import br.com.zup.aula.Security.JWT.FiltroDeAutolizacao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -41,8 +43,10 @@ public class ConfiguracaoSeguranca extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll()
                 .antMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
                 .anyRequest().authenticated();
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.addFilter(new FiltroAutenticacaoJwt(componenteJWT, authenticationManager()));
+        http.addFilter(new FiltroDeAutolizacao(authenticationManager(), componenteJWT, userDetailsService));
     }
 
     @Override
